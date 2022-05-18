@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "windowshopper-f8202",
+  "private_key_id": "f55ebc628c5bf1ce1be007744ca1656607d36c9b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCqHEFKONfwwt5f\ntbW6wSR5pYe7DWWVtidAZcI+HdbDgBG0hMkazbga1w5sSm4HD/viZqtv591b05YV\nky6R8kz4n4k5dv+2EDg2/DhXDe6lbHUKWskji9Jy9jSryPWn9b7LpUs2U6f5+yeG\nQJ+lBguohMNAFM7+7ckB3a36YBpCDK1Pk8lTO//+agOmtrfUIeOw8GnN3N2krcvJ\nNjPsn+wSXyMHAbbv+Cj9Pzoh4ju+L41NxET3w/fxXDn4jW6HvPcJ4ypNXd0gckGC\nFxH/oapsDKoMO58fpeIdZXHrQ7Oa5dCaPoa+yPzvfRNnGHmHgeOQuNA69D+no5bB\n+ERuXHjPAgMBAAECggEANHvbOQcouMOm0GjD1QbaNh34LqIHgZVdruS2dWvHYzIU\nRFnjoj1uW/mWHZspL0yjLkr3AePLzBUP7UAn0ierz9mJAQ3R/14pue0/hLxrsOYx\nhixUen8dQxLrVUT/Zf7QCwzIk85juSDgJO+zUbr3xdqQUykYZFcA+W5nyyPzdgTq\nbbjBgHoWWtK429nFG7hpBVfD59dUE+MB5Nh4JCPoGcvfdvWkVUosejtGKEcVr6Ie\nniUKyZu5bDg9tE3wp7A4Hdd3fHWPSuJXxSaPykkx2PDBr3cILemVbnmCbfflAE/r\nyNpE79NPGnHljNyMMPgmUrht3vSVPFs/5Prwrjf7QQKBgQDXe1oaXhKd279kJbI/\nVrj5/WRKhSoUvlioy7yltl3cjSa+v62cRkOazi/jrWgW3csNAshMfe7R91v71xQf\nnx2owcpspaKse6VP0ylGwCOge6sSk4e2MKz0cVEpMLKS5JQFknn7uYGn5r1knDQQ\nzZowkQ9Ntexe2Wlk0Ep2/tLJyQKBgQDKGNtYcaWtBlftXDeolPCGeDwKOLR0/o0t\nBPCnum97+dntO1zf1FCdUiiahlaeVaIn3fRPzSi4sJko9IHnx3CqhuYusO9a+cI5\njVK2oCg/ff8bzHUEEO50IOAPTmoySFyuGnrIx0ngvF3XOKjW9OZXP3zvw6UfPIV/\nebh3lM151wKBgQCr+qVVOhO9re85LOTwrHSCAX0UBOgrGiiEv+bWk5CiQH3V7AHS\nIjo+yaVrH7Fd3rL6tWfLtQ7wwW3GuEg1XLc9Qz4eLKyC4UR1S2E8OIm2wj0tXFYK\nURsZFX/jUhyUJJ8HO3rkL5CNwxkRvaHIb3BKptwB99qpcPgvIBbulj8CEQKBgApQ\npHlqK4ueRESgLVMUbwZeAqp+5G8IQwpmMyZMdL4+LWpXWlEuVAMDm4DvlGI2erVQ\nNdUQ4qAym06k1DCRVGXPxtXhQAZDsy8e0Hbzy7oZ4zh3Ag34E0OoHeeKGA+C9AAK\n5/NxgIrQ8nU2th9qlosjeWv/b2EdxK6R9uFbnfU3AoGBAJHT68rr10bzw4Ujs30W\nziilbn0hVTE158MK9Xv06Qvb/oqiqDh8VT3ViMnVZGou3hdPcW1e8vLDPQGjK1Os\nOu5vV/C+t7I7ejcfQhgSDETkdS6/WlSoTamGTmnmV6fczssoYd67Iuud1NLri+TW\n9sdLdkrcJq5unEDtTL+nvVD2\n-----END PRIVATE KEY-----\n",
+  "client_email": "windowshopper-chatbot@windowshopper-f8202.iam.gserviceaccount.com",
+  "client_id": "104805482659372575121",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/windowshopper-chatbot%40windowshopper-f8202.iam.gserviceaccount.com"
+}

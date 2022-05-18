@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>635329526422-v2nd6qpig0fq84tlih8phqr8ltpnma0s.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.635329526422-v2nd6qpig0fq84tlih8phqr8ltpnma0s</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCuHLECRbRYcQCoANMXKUOnfuQzLAHBqss</string>
+	<key>GCM_SENDER_ID</key>
+	<string>635329526422</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.windowShopper</string>
+	<key>PROJECT_ID</key>
+	<string>windowshopper-f8202</string>
+	<key>STORAGE_BUCKET</key>
+	<string>windowshopper-f8202.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:635329526422:ios:02c5d5fdf3982cda3660b7</string>
+</dict>
+</plist>

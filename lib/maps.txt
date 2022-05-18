@@ -1,0 +1,41 @@
+/*
+          ElevatedButton(
+            child: Text("Get Location",
+              style: Theme.of(context).textTheme.caption,),
+            onPressed: () {
+              getCurLocation();
+            },
+          ),*/
+
+
+final geolocator = Geolocator.getCurrentPosition(forceAndroidLocationManager: true);
+  late Position _currentLocation;
+  String currentAddress = "";
+
+  void getCurLocation() {
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position){
+      setState((){
+        _currentLocation = position;
+      });
+      getAddressFromCoordinates();
+    }).catchError((error) {
+      print(error);
+    });
+  }
+
+  void getAddressFromCoordinates() async {
+    try {
+      List<Placemark> placemark = await placemarkFromCoordinates(_currentLocation.latitude, _currentLocation.longitude);
+      Placemark p = placemark[0];
+      setState(() {
+        currentAddress = "${p.thoroughfare}, ${p.subThoroughfare}, ${p.name}, ${p.subLocality}";
+      });
+    }catch(error) {
+      print(error);
+    }
+  }
+
+https://www.privacypolicygenerator.info/live.php?token=3ftKr2JN6s5F01r1gGPgSgZ5MN8HU4pA
+
+https://www.termsandconditionsgenerator.com/live.php?token=1O1KvlsyA7dONzURBdHDLCB89K7YcP8o

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "635329526422",
+    "project_id": "windowshopper-f8202",
+    "storage_bucket": "windowshopper-f8202.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635329526422:android:fa72c7536c8daffb3660b7",
+        "android_client_info": {
+          "package_name": "com.example.window_shopper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635329526422-b4r8e2v7l92k9eu2m8u1fmdq8rfm84ma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRPRmTUZozzjtRuAdHchm8V_bozzDyGsc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635329526422-b4r8e2v7l92k9eu2m8u1fmdq8rfm84ma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
