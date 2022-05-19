@@ -47,8 +47,6 @@ class _BizDetailState extends State<BizDetail> {
 
     final Storage storage = Storage();
 
-    //form key for validation
-    final _formKey = GlobalKey<FormState>();
     var ratings;
 
     final TextEditingController review = TextEditingController();
@@ -73,14 +71,6 @@ class _BizDetailState extends State<BizDetail> {
       }).catchError((e) {});
     });
   }
-
-      /*Future<Widget> _getImage(BuildContext context, String imageName) async {
-      late Image image;
-      await FirebaseStorageService.loadImage(context, imageName).then((value) {
-        image = Image.network(value.toString(), fit: BoxFit.scaleDown);
-      });
-      return image;
-    }*/
 
     submitFacebookClicks() async {
       FacebookModel facebook = FacebookModel(createdOn: DateTime.now());
@@ -161,6 +151,17 @@ class _BizDetailState extends State<BizDetail> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: Text("Listing details",style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold)),
+          leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.redAccent),
+            onPressed: () {
+            Navigator.of(context).pop();
+            },
+          ),
+        ),
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -171,13 +172,13 @@ class _BizDetailState extends State<BizDetail> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /*FutureBuilder(
-                      future: storage.downloadURL('image.jpg'),
+                    FutureBuilder(
+                      future: storage.downloadURL('${businessNotifier.currentBusiness.bizId}.jpg'),
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
                         if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
                           return Container(
-                              width: MediaQuery.of(context).size.width / 1.2,
+                              width: MediaQuery.of(context).size.width,
                             height: 250,
                             child: Image.network(snapshot.data!, fit: BoxFit.contain,)
                           );
@@ -187,47 +188,11 @@ class _BizDetailState extends State<BizDetail> {
                         }
                         return Container();
                       },
-                    ),*/
-                    Stack(
-              children: [
-                    Image(image: AssetImage('assets/store.jpg'),
+                    ),
+                    /*Image(image: AssetImage('assets/store.jpg'),
                       width: MediaQuery.of(context).size.width,
                       height: 150,
-                    ),
-                    Positioned(
-                            width: MediaQuery.of(context).size.width,
-                            top: 25,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 25),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  InkWell(
-                                    onTap: (){
-                                      Navigator.pop(context);
-                                    },
-                               child: BorderIcon(
-                                      height: 50,
-                                      width: 50,
-                                      padding: EdgeInsets.symmetric(horizontal: 25),
-                                      child: Icon(Icons.arrow_back_ios,color: Colors.redAccent, size: 25),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: BorderIcon(
-                                      height: 50,
-                                      width: 50,
-                                      padding: EdgeInsets.symmetric(horizontal: 25),
-                                      child: Icon(Icons.favorite_border, color: Colors.redAccent),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+                    ),*/
                     SizedBox(height: 10),
 
                     Padding(
@@ -346,6 +311,58 @@ class _BizDetailState extends State<BizDetail> {
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
                         children: [
+                          Text("Location Information",
+                            style: TextStyle(fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
+                        children: [
+                          Text("Physical location: ",
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                          Text("${businessNotifier.currentBusiness.physicalAddress
+                              .toString()}",style: TextStyle(fontSize: 14)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
+                        children: [
+                          Text("County: ",
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                          Text("${businessNotifier.currentBusiness.county
+                              .toString()}",style: TextStyle(fontSize: 14)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
+                        children: [
+                          Text("Town: ",
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                          Text("${businessNotifier.currentBusiness.town
+                              .toString()}",style: TextStyle(fontSize: 14)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
+                        children: [
                         Text("Business Description",
                               style: TextStyle(fontSize: 20,
                                   color: Colors.black,
@@ -363,15 +380,6 @@ class _BizDetailState extends State<BizDetail> {
                     ),
                     const SizedBox(height: 10),
 
-                    /*Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      child: const Text("Gallery",
-                          style: TextStyle(fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold)),
-                    ),
-                    const SizedBox(height: 10),*/
-
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: const Text("Reviews",
@@ -379,7 +387,7 @@ class _BizDetailState extends State<BizDetail> {
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
 
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -412,13 +420,16 @@ class _BizDetailState extends State<BizDetail> {
                             }).toList();
 
                           return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children:
                               List.generate(
                                   viewDocs.length,
                                       (index) => Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 25),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                           children:[
                                             Text(viewDocs[index]["userName"].toString(), style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                                             SizedBox(height: 5,),
@@ -430,16 +441,17 @@ class _BizDetailState extends State<BizDetail> {
                                               borderColor: Colors.redAccent,
                                             ),
                                             SizedBox(height: 5,),
-                                            Text(viewDocs[index]["review"].toString()),
+                                            Text(viewDocs[index]["review"].toString(), textAlign: TextAlign.justify, style: Theme.of(context).textTheme.bodyText2),
                                             SizedBox(height: 18,),
                                           ]
                               ),
-                                      )),
+                               )
+                              ),
                           );
                         }
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -565,12 +577,3 @@ class BorderIcon extends StatelessWidget {
   }
 }
 
-
-/*class FirebaseStorageService extends ChangeNotifier {
-  FirebaseStorageService();
-  static Future<dynamic> loadImage(BuildContext context, String Image) async {
-    return await FirebaseStorage.instance.ref().child(Image).getDownloadURL();
-  }
-
-
-}*/

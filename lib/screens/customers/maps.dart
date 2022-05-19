@@ -62,6 +62,8 @@ class _MapScreenState extends State<MapScreen> {
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -77,14 +79,53 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late CameraPosition _cameraPosition;
-
   @override
   void initState() {
-    super.initState();
-    _cameraPosition = const CameraPosition(target: LatLng(-1.27372863, 36.81625396),
-        zoom: 17.0);
+    setState(() {
+      getCurLocation();
+      super.initState();
+    });
   }
+
+  final geolocator = Geolocator.getCurrentPosition(forceAndroidLocationManager: true);
+  late Position _currentLocation;
+  String currentAddress = "";
+  var bizLatitude;
+  var bizLongitude;
+
+  Future getCurLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location Not Available');
+      }
+    } else {
+      throw Exception('Error');
+    }
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position){
+      setState((){
+        _currentLocation = position;
+      });
+    }).catchError((error) {
+      print(error);
+    });
+  }
+
+  void getAddressFromCoordinates() async {
+    try {
+      List<Placemark> placemark = await placemarkFromCoordinates(_currentLocation.latitude, _currentLocation.longitude);
+      Placemark p = placemark[0];
+      setState(() {
+        currentAddress = "${p.thoroughfare}, ${p.subThoroughfare}, ${p.name}, ${p.subLocality}";
+      });
+    }catch(error) {
+      print(error);
+    }
+  }
+  late CameraPosition _cameraPosition;
   late GoogleMapController _mapController;
 
   @override
@@ -107,7 +148,7 @@ class _MapScreenState extends State<MapScreen> {
             body: Stack(
               children: <Widget>[
                 GoogleMap(
-                  initialCameraPosition: _cameraPosition,
+                  initialCameraPosition: CameraPosition(target: LatLng(-1.27372863, 36.81625396), zoom: 17.0),
                   onMapCreated: (GoogleMapController mapController) {
                     _mapController = mapController;
                   },

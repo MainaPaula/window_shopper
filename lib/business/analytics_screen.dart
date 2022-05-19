@@ -309,25 +309,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                     SizedBox(height: 20,),
 
-                    /*Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        children: [
-                          Text('Search Insights', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
-                          SizedBox(height: 10,),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Divider(
-                        height: 15,
-                        color: Colors.redAccent.shade400,
-                        thickness: 3,
-                      ),
-                    ),
-                    SizedBox(height: 10),*/
-                    
                   ],
                 ),
               ),

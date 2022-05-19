@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:window_shopper/business/filter_results.dart';
+import 'package:window_shopper/business/storage_service.dart';
 import 'package:window_shopper/business/listing_details.dart';
 import 'package:window_shopper/models/media_clicks.dart';
 import '../../business/search.dart';
@@ -20,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 final _auth = FirebaseAuth.instance;
 User? user = _auth.currentUser;
+final Storage storage = Storage();
+
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 var listingId;
 var createdOn = DateTime.now();
@@ -65,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     BusinessNotifier businessNotifier = Provider.of<BusinessNotifier>(context);
+
 
     submitProfileViews() async {
       ProfileViewsModel profileViews = ProfileViewsModel(createdOn: DateTime.now());
@@ -121,42 +124,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
 
-              /*GestureDetector(
-                onTap: () {
-                  var category;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FilterResults(category)));
-                },
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      'Automotive',
-                      'Business Support',
-                      'Business Supplies',
-                      'Computers',
-                      'Construction',
-                      'Contractors',
-                      'Education',
-                      'Entertainment',
-                      'Food/Dining',
-                      'Health/Medicine',
-                      'Home/Garden',
-                      'Legal/Financial',
-                      'Manufacturing',
-                      'Wholesale',
-                      'Distribution',
-                      'Merchant(Retail)',
-                      'Miscellaneous',
-                      'Personal Care',
-                      'Real Estate',
-                      'Travel',
-                      'Transportation'
-                    ].map((filter) => FilterOption(categories: filter)).toList(),
-                  ),
+              SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    'Automotive',
+                    'Business Support',
+                    'Business Supplies',
+                    'Computers',
+                    'Construction',
+                    'Contractors',
+                    'Education',
+                    'Entertainment',
+                    'Food/Dining',
+                    'Health/Medicine',
+                    'Home/Garden',
+                    'Legal/Financial',
+                    'Manufacturing',
+                    'Wholesale',
+                    'Distribution',
+                    'Merchant(Retail)',
+                    'Miscellaneous',
+                    'Personal Care',
+                    'Real Estate',
+                    'Travel',
+                    'Transportation'
+                  ].map((filter) => FilterOption(categories: filter)).toList(),
                 ),
               ),
-              SizedBox(height: 10),*/
+              SizedBox(height: 10),
 
               Expanded(
                 child: Padding(
@@ -169,32 +166,44 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              GestureDetector(
+                              Card(
+                                child: GestureDetector(
                                 onTap:() {
                                   submitProfileViews();
                                   businessNotifier.currentBusiness = businessNotifier.businessList[index];
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const BizDetail()));
                                 },
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(25),
-                                      child: Image(image: const AssetImage('assets/store.jpg'),
-                                        width: MediaQuery.of(context).size.width,
-                                        height: 150,
+                                  child: Stack(
+                                    children: [
+                                      FutureBuilder(
+                                        future: storage.downloadURL('${businessNotifier.businessList[index].bizId}.jpg'),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> snapshot) {
+                                          if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                                            return Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                height: 150,
+                                                child: Image.network(snapshot.data!, fit: BoxFit.cover,)
+                                            );
+                                          }
+                                          if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+                                            return CircularProgressIndicator();
+                                          }
+                                          return Container();
+                                        },
                                       ),
-                                    ),
-                                    /*Positioned(
-                                        top: 15,
-                                        right: 15,
-                                          child: BorderBox(
-                                              padding: EdgeInsets.symmetric(horizontal: 20),
-                                              height: 50,
-                                              width: 50,
-                                              child: Icon(Icons.favorite_border, color: Colors.redAccent)
-                                          ),
-                                        )*/
-                                  ],
+                                      /*Positioned(
+                                          top: 15,
+                                          right: 15,
+                                            child: BorderBox(
+                                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                                height: 50,
+                                                width: 50,
+                                                child: Icon(Icons.favorite_border, color: Colors.redAccent)
+                                            ),
+                                          )*/
+                                    ],
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 15),

@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import '../models/listing.dart';
 import '../models/media_clicks.dart';
 import '../notifier/biz_notifier.dart';
+import '../screens/customers/home.dart';
 import 'biz_registration.dart';
 import 'listing_details.dart';
+import 'storage_service.dart';
 
 class ListingScreen extends StatefulWidget {
   const ListingScreen({Key? key}) : super(key: key);
@@ -91,83 +93,149 @@ class _ListingScreenState extends State<ListingScreen> {
           },
         ),
       ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: ListView.builder(
-                  physics:BouncingScrollPhysics() ,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      margin: EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap:() {
-                              submitProfileViews();
-                              businessNotifier.currentBusiness = businessNotifier.businessList[index];
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const BizDetail()));
-                            },
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: Image(image: AssetImage('assets/store.jpg'),
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 150,
-                                  ),
-                                ),
-                                Positioned(
-                                    top: 15,
-                                    right: 15,
-                                    child: BorderBox(
-                                        padding: EdgeInsets.symmetric(horizontal: 20),
-                                        height: 50,
-                                        width: 50,
-                                        child: Icon(Icons.favorite_border, color: Colors.redAccent,)
-                                    )
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          Row(
-                            children: [
-                              Text (businessNotifier.businessList[index].bizName.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                            ],
-                          ),
-                          SizedBox(height: 15),
-
-                        ],
-                      ),
-                    );
-                  },
-                  itemCount: businessNotifier.businessList.length,
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: Text(
+                  "Listings",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const BizRegistration()));
-                    },
-                    child: const Icon(Icons.add, color: Colors.white,),
-                  ),
-                ],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Divider(
+                  height: 15,
+                  color: Colors.redAccent.shade400,
+                  thickness: 3,
+                ),
               ),
-            )
-          ],
-        ),
-      )
+              SizedBox(height: 10),
+
+              SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    'Automotive',
+                    'Business Support',
+                    'Business Supplies',
+                    'Computers',
+                    'Construction',
+                    'Contractors',
+                    'Education',
+                    'Entertainment',
+                    'Food/Dining',
+                    'Health/Medicine',
+                    'Home/Garden',
+                    'Legal/Financial',
+                    'Manufacturing',
+                    'Wholesale',
+                    'Distribution',
+                    'Merchant(Retail)',
+                    'Miscellaneous',
+                    'Personal Care',
+                    'Real Estate',
+                    'Travel',
+                    'Transportation'
+                  ].map((filter) => FilterOption(categories: filter)).toList(),
+                ),
+              ),
+              SizedBox(height: 10),
+
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: ListView.builder(
+                    physics:BouncingScrollPhysics() ,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Card(
+                              child: GestureDetector(
+                                onTap:() {
+                                  submitProfileViews();
+                                  businessNotifier.currentBusiness = businessNotifier.businessList[index];
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const BizDetail()));
+                                },
+                                child: Stack(
+                                  children: [
+                                    FutureBuilder(
+                                      future: storage.downloadURL('${businessNotifier.businessList[index].bizId}.jpg'),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<String> snapshot) {
+                                        if(snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                                          return Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              height: 150,
+                                              child: Image.network(snapshot.data!, fit: BoxFit.cover,)
+                                          );
+                                        }
+                                        if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+                                          return CircularProgressIndicator();
+                                        }
+                                        return Container();
+                                      },
+                                    ),
+                                    /*Positioned(
+                                          top: 15,
+                                          right: 15,
+                                            child: BorderBox(
+                                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                                height: 50,
+                                                width: 50,
+                                                child: Icon(Icons.favorite_border, color: Colors.redAccent)
+                                            ),
+                                          )*/
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Row(
+                              children: [
+                                Text (businessNotifier.businessList[index].bizName.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            SizedBox(height: 15),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: businessNotifier.businessList.length,
+                    /*onTap: (){
+                            businessNotifier.currentBusiness = businessNotifier.businessList[index];
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ListingDetail()));
+                          },*/
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FloatingActionButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const BizRegistration()));
+                      },
+                      child: const Icon(Icons.add, color: Colors.white,),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        )
     );
   }
 }
