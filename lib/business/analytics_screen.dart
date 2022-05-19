@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:window_shopper/models/chart_model.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:window_shopper/models/media.dart';
+import 'package:window_shopper/notifier/media_notifier.dart';
 import 'package:window_shopper/notifier/search_notifier.dart';
 import '../models/search.dart';
 import '../models/views.dart';
@@ -26,60 +29,124 @@ void getSearches(SearchNotifier searchNotifier) async {
   searchNotifier.searchList = _searchList;
 }
 
-void getProfileViews(ProfileViewsNotifier profileViewsNotifier) async {
-  QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collectionGroup('profileViews').get();
-  List<ProfileViews> _viewsList = [];
-
-  snapshot.docs.forEach((element) {
-    ProfileViews profileViews = ProfileViews.fromMap(element.data());
-    _viewsList.add(profileViews);
-  });
-
-  profileViewsNotifier.viewsList = _viewsList;
-}
-
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
-  var dailyListingViews, weeklyListingViews, monthlyListingViews;
+  final currentUser = FirebaseAuth.instance.currentUser?.uid;
+
+  void getProfileViews(ProfileViewsNotifier profileViewsNotifier) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection("businesses").doc(currentUser).collection('profileViews').get();
+    List<ProfileViews> _viewsList = [];
+
+    snapshot.docs.forEach((element) {
+      ProfileViews profileViews = ProfileViews.fromMap(element.data());
+      _viewsList.add(profileViews);
+    });
+
+    profileViewsNotifier.viewsList = _viewsList;
+  }
+  void getFacebookViews(FacebookNotifier facebookNotifier) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection("businesses").doc(currentUser).collection('facebook_clicks').get();
+    List<Facebook> _facebookViewsList = [];
+
+    snapshot.docs.forEach((element) {
+      Facebook facebookViews = Facebook.fromMap(element.data());
+      _facebookViewsList.add(facebookViews);
+    });
+
+    facebookNotifier.facebookList = _facebookViewsList;
+  }
+  void getInstagramViews(InstagramNotifier instagramNotifier) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection("businesses").doc(currentUser).collection('instagram_clicks').get();
+    List<Instagram> _instagramViewsList = [];
+
+    snapshot.docs.forEach((element) {
+      Instagram instagramViews = Instagram.fromMap(element.data());
+      _instagramViewsList.add(instagramViews);
+    });
+
+    instagramNotifier.instagramList = _instagramViewsList;
+  }
+  void getTwitterViews(TwitterNotifier twitterNotifier) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection("businesses").doc(currentUser).collection('twitter_clicks').get();
+    List<Twitter> _twitterViewsList = [];
+
+    snapshot.docs.forEach((element) {
+      Twitter twitterViews = Twitter.fromMap(element.data());
+      _twitterViewsList.add(twitterViews);
+    });
+
+    twitterNotifier.twitterList = _twitterViewsList;
+  }
+
+  void getPinterestViews(PinterestNotifier pinterestNotifier) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection("businesses").doc(currentUser).collection('pinterest_clicks').get();
+    List<Pinterest> _pinterestViewsList = [];
+
+    snapshot.docs.forEach((element) {
+      Pinterest pinterestViews = Pinterest.fromMap(element.data());
+      _pinterestViewsList.add(pinterestViews);
+    });
+
+    pinterestNotifier.pinterestList = _pinterestViewsList;
+  }
+
   @override
   void initState() {
     SearchNotifier searchNotifier = Provider.of<SearchNotifier>(context, listen: false);
     ProfileViewsNotifier profileViewsNotifier = Provider.of<ProfileViewsNotifier>(context, listen: false);
+    FacebookNotifier facebookNotifier = Provider.of<FacebookNotifier>(context, listen: false);
+    InstagramNotifier instagramNotifier = Provider.of<InstagramNotifier>(context, listen: false);
+    TwitterNotifier twitterNotifier = Provider.of<TwitterNotifier>(context, listen: false);
+    PinterestNotifier pinterestNotifier = Provider.of<PinterestNotifier>(context, listen: false);
 
     getSearches(searchNotifier);
     getProfileViews(profileViewsNotifier);
+    getFacebookViews(facebookNotifier);
+    getPinterestViews(pinterestNotifier);
+    getInstagramViews(instagramNotifier);
+    getTwitterViews(twitterNotifier);
     super.initState();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    SearchNotifier searchNotifier = Provider.of<SearchNotifier>(context);
-    ProfileViewsNotifier profileViewsNotifier = Provider.of<ProfileViewsNotifier>(context);
-    var i;
-    var currentDay = DateTime.now();
-    var dailyViews = currentDay.subtract(Duration(days: 1));
-    var weeklyViews = currentDay.subtract(Duration(days: 7));
-    var monthlyViews = currentDay.subtract(Duration(days: 30));
+    final Stream<QuerySnapshot> profileViewsStream = FirebaseFirestore.instance
+        .collection("businesses")
+        .doc(currentUser)
+        .collection('profile_views')
+        .snapshots();
 
+    final Stream<QuerySnapshot> ratingsStream = FirebaseFirestore.instance
+        .collection("businesses")
+        .doc(currentUser)
+        .collection('reviewDetails')
+        .snapshots();
+
+    FacebookNotifier facebookNotifier = Provider.of<FacebookNotifier>(context);
+    InstagramNotifier instagramNotifier = Provider.of<InstagramNotifier>(context);
+    TwitterNotifier twitterNotifier = Provider.of<TwitterNotifier>(context);
+    PinterestNotifier pinterestNotifier = Provider.of<PinterestNotifier>(context);
+
+    int instaClicks = instagramNotifier.instagramList.length;
     final List<ChartModel> data = [
       ChartModel(
           media: 'Twitter',
-          clicks: 10,
+          clicks: twitterNotifier.twitterList.length.toInt(),
           color: charts.ColorUtil.fromDartColor(Colors.redAccent)
       ),
       ChartModel(
           media: 'Instagram',
-          clicks: 12,
+          clicks: instaClicks,
           color: charts.ColorUtil.fromDartColor(Colors.redAccent)
       ),
       ChartModel(
           media: 'Facebook',
-          clicks: 16,
+          clicks: facebookNotifier.facebookList.length.toInt(),
           color: charts.ColorUtil.fromDartColor(Colors.redAccent)
       ),
       ChartModel(
           media: 'Pinterest',
-          clicks: 5,
+          clicks: pinterestNotifier.pinterestList.length.toInt(),
           color: charts.ColorUtil.fromDartColor(Colors.redAccent)
       ),
     ];
@@ -108,24 +175,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 10,),
                     Padding(
-                      padding: EdgeInsets.only(left: 25),
+                      padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
                         children: [
-                          TextButton(onPressed: () {},
-                              child: Text('Daily', style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.redAccent)),
-                          ),
-                          SizedBox(width: 40,),
-
-                          TextButton(onPressed: () {},
-                            child: Text('Weekly', style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.black)),
-                          ),
-                          SizedBox(width: 40,),
-
-                          TextButton(onPressed: () {},
-                            child: Text('Monthly', style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Colors.black)),
-                          ),
-
+                          Text('Listing Interaction', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+                          SizedBox(height: 10,),
                         ],
                       ),
                     ),
@@ -138,67 +194,87 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ),
                     ),
                     SizedBox(height: 10),
-
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
                         children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            child: Card(
-                              color: Colors.grey.shade100,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(dailyListingViews.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent,)),
-                                    SizedBox(height: 5,),
-                                    Text('Listing Vistings', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black,), textAlign: TextAlign.center,),
-                                  ],
+                          StreamBuilder<QuerySnapshot>(
+                            stream: profileViewsStream,
+                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if(snapshot.hasError) {
+                                //Snackbar for the error
+                              }
+                              if(snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              final List viewDocs = [];
+                              snapshot.data!.docs.map((DocumentSnapshot document)  {
+                                Map view = document.data() as Map<String, dynamic>;
+                                viewDocs.add(view);
+                              }).toList();
+
+                              return Container(
+                                width: 100,
+                                height: 100,
+                                child: Card(
+                                  color: Colors.grey.shade100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text('${snapshot.data!.docs.length}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent,)),
+                                        SizedBox(height: 5,),
+                                        Text('Listing Vistings', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black,), textAlign: TextAlign.center,),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }
                           ),
                           SizedBox(width: 15,),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            child: Card(
-                              color: Colors.grey.shade100,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text('0', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent,)),
-                                    SizedBox(height: 5,),
-                                    Text('Ratings', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black,), textAlign: TextAlign.center,),
-                                  ],
+
+                          StreamBuilder<QuerySnapshot>(
+                            stream: ratingsStream,
+                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if(snapshot.hasError) {
+                                //Snackbar for the error
+                              }
+                              if(snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              final List ratingsDocs = [];
+                              snapshot.data!.docs.map((DocumentSnapshot document)  {
+                                Map ratReview = document.data() as Map<String, dynamic>;
+                                ratingsDocs.add(ratReview);
+                              }).toList();
+
+                              return Container(
+                                width: 100,
+                                height: 100,
+                                child: Card(
+                                  color: Colors.grey.shade100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text('${ratingsDocs.length}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent,)),
+                                        SizedBox(height: 5,),
+                                        Text('Ratings & Reviews', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black,), textAlign: TextAlign.center,),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            }
                           ),
                           SizedBox(width: 15,),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            child: Card(
-                              color: Colors.grey.shade100,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text('0', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent,)),
-                                    SizedBox(height: 5,),
-                                    Text('Reviews', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black,), textAlign: TextAlign.center,),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -224,7 +300,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     SizedBox(height: 10),
 
                     Container(
-                      height: 500,
+                      height: 400,
                       padding: EdgeInsets.all(10),
                       child: charts.BarChart(
                         series,
@@ -233,7 +309,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                     SizedBox(height: 20,),
 
-                    Padding(
+                    /*Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
                         children: [
@@ -250,7 +326,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         thickness: 3,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 10),*/
                     
                   ],
                 ),

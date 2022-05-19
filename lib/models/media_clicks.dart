@@ -1,8 +1,8 @@
-class Facebook {
+class FacebookModel {
   late DateTime createdOn;
   String? clickID;
 
-  Facebook({this.clickID, required this.createdOn});
+  FacebookModel({this.clickID, required this.createdOn});
 
   Map<String, dynamic> toMap() {
     return {
@@ -11,17 +11,17 @@ class Facebook {
     };
   }
 
-  Facebook.fromMap(Map<String, dynamic> data) {
+  FacebookModel.fromMap(Map<String, dynamic> data) {
     createdOn = data['createdOn'];
     clickID = data['clickId'];
   }
 }
 
-class Twitter {
+class TwitterModel {
   late DateTime createdOn;
   String? clickID;
 
-  Twitter({this.clickID, required this.createdOn});
+  TwitterModel({this.clickID, required this.createdOn});
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,17 +30,17 @@ class Twitter {
     };
   }
 
-  Twitter.fromMap(Map<String, dynamic> data) {
+  TwitterModel.fromMap(Map<String, dynamic> data) {
     createdOn = data['createdOn'];
     clickID = data['clickId'];
   }
 }
 
-class Instagram {
+class InstagramModel {
   late DateTime createdOn;
   String? clickID;
 
-  Instagram({this.clickID, required this.createdOn});
+  InstagramModel({this.clickID, required this.createdOn});
 
   Map<String, dynamic> toMap() {
     return {
@@ -49,17 +49,17 @@ class Instagram {
     };
   }
 
-  Instagram.fromMap(Map<String, dynamic> data) {
+  InstagramModel.fromMap(Map<String, dynamic> data) {
     createdOn = data['createdOn'];
     clickID = data['clickId'];
   }
 }
 
-class Pinterest {
+class PinterestModel {
   late DateTime createdOn;
   String? clickID;
 
-  Pinterest({this.clickID, required this.createdOn});
+  PinterestModel({this.clickID, required this.createdOn});
 
   Map<String, dynamic> toMap() {
     return {
@@ -68,7 +68,7 @@ class Pinterest {
     };
   }
 
-  Pinterest.fromMap(Map<String, dynamic> data) {
+  PinterestModel.fromMap(Map<String, dynamic> data) {
     createdOn = data['createdOn'];
     clickID = data['clickId'];
   }

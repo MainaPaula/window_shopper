@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../models/listing.dart';
 import '../models/media_clicks.dart';
 import '../notifier/biz_notifier.dart';
-import 'biz_registration.dart';
 import 'listing_details.dart';
 
 class FilterResults extends StatefulWidget {
@@ -31,7 +30,7 @@ var mediaDocID;
 
 class _FilterResultsState extends State<FilterResults> {
   void getBusinesses(BusinessNotifier businessNotifier) async {
-    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collectionGroup('listings').where("bizCategory", isEqualTo: '${widget.query}').get();
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collectionGroup('listings').where("bizCategory", isEqualTo: widget.query).get();
     List<Businesses> _businessList = [];
 
     snapshot.docs.forEach((element) {
@@ -83,6 +82,7 @@ class _FilterResultsState extends State<FilterResults> {
 
     return Scaffold(
         backgroundColor: Colors.white,
+
         body: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

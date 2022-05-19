@@ -16,12 +16,13 @@ class _ChatbotState extends State<Chatbot> {
     AuthGoogle authGoogle = await AuthGoogle(fileJson: "assets/windowshopper-f8202-f55ebc628c5b.json").build();
     Dialogflow dialogflow = Dialogflow(authGoogle: authGoogle, language: Language.english);
     AIResponse aiResponse = await dialogflow.detectIntent(query);
-    setState(() {
+    print(aiResponse);
+    /*setState(() {
       messages.insert(0, {
         "data": 0,
         "message": aiResponse.getListMessage()[0]["text"]["text"][0]
       });
-    });
+    });*/
   }
 
   final userQuery = TextEditingController();

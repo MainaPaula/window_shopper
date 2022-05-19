@@ -253,8 +253,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
               Positioned(
                   top: 100,
-                  left: 10,
-                  right: 20,
                   child: GestureDetector(
                     onTap: () => Get.dialog(LocationSearchDialogue(mapController: _mapController)),
                     child: Container(

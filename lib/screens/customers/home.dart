@@ -95,7 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.search),
               color: Colors.redAccent,
             ),
-
           ],
           ),
         body: Container(
@@ -113,15 +112,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25),
+                padding: EdgeInsets.symmetric(horizontal: 15),
                 child: Divider(
-                  height: 25,
-                  color: Colors.redAccent
+                  height: 15,
+                  color: Colors.redAccent.shade400,
+                  thickness: 3,
                 ),
               ),
               SizedBox(height: 10),
 
-              GestureDetector(
+              /*GestureDetector(
                 onTap: () {
                   var category;
                   Navigator.push(context, MaterialPageRoute(builder: (context) => FilterResults(category)));
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 10),*/
 
               Expanded(
                 child: Padding(
@@ -179,21 +179,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(25),
-                                      child: Image(image: AssetImage('assets/store.jpg'),
+                                      child: Image(image: const AssetImage('assets/store.jpg'),
                                         width: MediaQuery.of(context).size.width,
                                         height: 150,
                                       ),
                                     ),
-                                    Positioned(
+                                    /*Positioned(
                                         top: 15,
                                         right: 15,
-                                        child: BorderBox(
-                                            padding: EdgeInsets.symmetric(horizontal: 20),
-                                            height: 50,
-                                            width: 50,
-                                            child: Icon(Icons.favorite_border, color: Colors.redAccent)
-                                        )
-                                    )
+                                          child: BorderBox(
+                                              padding: EdgeInsets.symmetric(horizontal: 20),
+                                              height: 50,
+                                              width: 50,
+                                              child: Icon(Icons.favorite_border, color: Colors.redAccent)
+                                          ),
+                                        )*/
                                   ],
                                 ),
                               ),
@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-class BorderBox extends StatelessWidget {
+/*class BorderBox extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
   final double width, height;
@@ -262,7 +262,7 @@ class BorderBox extends StatelessWidget {
       child: Center(child: child),
     );
   }
-}
+}*/
 
 class FilterOption extends StatelessWidget {
   final String categories;
@@ -298,7 +298,7 @@ class Listing extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
+          /*Stack(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(25),
@@ -315,7 +315,7 @@ class Listing extends StatelessWidget {
                 )
               )
             ],
-          ),
+          ),*/
           SizedBox(height: 15),
           Row(
             children: [

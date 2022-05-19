@@ -22,7 +22,7 @@ class LocationSearchDialogue extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        child: SizedBox(width: 250, child: TypeAheadField(
+        child: SizedBox(width: 450, child: TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(
             controller: _controller,
             textInputAction: TextInputAction.search,

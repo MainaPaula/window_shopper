@@ -22,15 +22,12 @@ class BusinessModel {
   String? insta;
   String? pinterest;
   String? bizDescription;
-  int? facebookClick;
-  int? twitterClick;
-  int? instaClick;
-  int? pinterestClick;
-  List? gallery;
+  Uri? bizLogo;
+  Map? gallery;
 
   BusinessModel({this.bizId, this.fullName, this.kraPin, this.bizName, this.regNo, this.bizCategory, this.bizType, this.firstBizDay, this.lastBizDay, this.email,
    this.phoneNumber, this.openingHrs, this.closingHrs, this.website, this.physicalAddress, this.county, this.constituency, this.town, this.facebook, this.twitter,
-    this.insta, this.pinterest, this.bizDescription, this.facebookClick, this.instaClick, this.pinterestClick, this.twitterClick, this.gallery});
+    this.insta, this.pinterest, this.bizDescription,this.bizLogo, this.gallery});
 
   //receive data from server
   factory BusinessModel.fromMap(map){
@@ -58,10 +55,7 @@ class BusinessModel {
       insta: map['insta'],
       pinterest: map['pinterest'],
       bizDescription: map['bizDescription'],
-      twitterClick: map['twitterClick'],
-      facebookClick: map['facebookClick'],
-      instaClick: map['instaClick'],
-      pinterestClick: map['pinterestClick'],
+      bizLogo: map['bizLogo'],
       gallery: map['gallery']
     );
   }
@@ -92,10 +86,7 @@ class BusinessModel {
       'instagram' : insta,
       'pinterest' : pinterest,
       'bizDescription' : bizDescription,
-      'twitterClick': twitterClick,
-      'facebookClick': facebookClick,
-      'instaClick': instaClick,
-      'pinterestClick': pinterestClick,
+      "bizLogo":bizLogo,
       'gallery' : gallery
     };
   }

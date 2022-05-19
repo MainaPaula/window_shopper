@@ -22,10 +22,8 @@ class Businesses {
   String? insta;
   String? pinterest;
   String? bizDescription;
-  int? facebookClick;
-  int? twitterClick;
-  int? instaClick;
-  int? pinterestClick;
+  Uri? bizLogo;
+
 
   //receive data from server
   Businesses.fromMap(Map<String, dynamic> data){
@@ -52,10 +50,7 @@ class Businesses {
         insta = data['insta'];
         pinterest = data['pinterest'];
         bizDescription = data['bizDescription'];
-        twitterClick = data['twitterClick'];
-        facebookClick = data['facebookClick'];
-        instaClick = data['instaClick'];
-        pinterestClick = data['pinterestClick'];
+        bizLogo = data['bizLogo'];
   }
 
 }

@@ -147,10 +147,6 @@ class _ListingScreenState extends State<ListingScreen> {
                     );
                   },
                   itemCount: businessNotifier.businessList.length,
-                  /*onTap: (){
-                            businessNotifier.currentBusiness = businessNotifier.businessList[index];
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ListingDetail()));
-                          },*/
                 ),
               ),
             ),

@@ -4,6 +4,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_shopper/location/location_controller.dart';
+import 'package:window_shopper/notifier/media_notifier.dart';
 import 'package:window_shopper/screens/splash_screen.dart';
 import 'notifier/biz_notifier.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,18 @@ Future<void> main() async {
       ),
       ChangeNotifierProvider(
         create: (context) => ProfileViewsNotifier(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => TwitterNotifier(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => InstagramNotifier(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => FacebookNotifier(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => PinterestNotifier(),
       ),
     ],
     child: const MyApp()),

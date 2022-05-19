@@ -1,12 +1,12 @@
 class Reviews {
   String? reviewId;
-  String? username;
+  String? userName;
   int? rating;
   String? review;
   String? listing;
 
   Reviews.fromMap(Map<String, dynamic> data) {
-    username = data['username'];
+    userName = data['userName'];
     rating = data['rating'];
     review = data['review'];
     listing = data['listing'];

@@ -16,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   List screens= [
     HomeScreen(),
     MapScreen(),
+    SearchScreen(),
     AccountScreen(),
   ];
 
@@ -44,6 +45,7 @@ class _MainScreenState extends State<MainScreen> {
         items: const [
           BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home_outlined)),
           BottomNavigationBarItem(label: 'Explore', icon: Icon(Icons.location_on_outlined)),
+          BottomNavigationBarItem(label: 'Search', icon: Icon(Icons.search)),
           BottomNavigationBarItem(label: 'Account', icon: Icon(Icons.person_outline_outlined)),
         ],
       ),

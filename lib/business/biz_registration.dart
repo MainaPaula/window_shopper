@@ -7,13 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path/path.dart' as Path;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:search_map_location/utils/google_search/place.dart';
-import 'package:search_map_location/utils/google_search/place_type.dart';
-import 'package:search_map_location/widget/search_widget.dart';
 import 'package:window_shopper/models/business_model.dart';
 import 'main_business.dart';
 import 'storage_service.dart';
@@ -35,19 +31,16 @@ class _BizRegistrationState extends State<BizRegistration> {
   final _auth = FirebaseAuth.instance;
   //form key for validation
   final _formKey = GlobalKey<FormState>();
-  List<File> _image = [];
   final picker = ImagePicker();
-  late CollectionReference imgRef;
-  late firebase_storage.Reference ref;
 
-  bool uploading = false;
+
   double val = 0;
 
-  late File? _file;
+  late File _file;
   ImagePicker image = ImagePicker();
   String url = "";
   var bizLogo;
-  List gallery = [];
+  Map<String, dynamic> gallery = {};
 
   final currentUser = FirebaseAuth.instance.currentUser?.uid;
   final Storage storage = Storage();
@@ -70,43 +63,6 @@ class _BizRegistrationState extends State<BizRegistration> {
       }).catchError((e) {});
     });
   }
-
-
-  /*Future<void> getCurLocation() async {
-    LocationPermission permission;
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location Not Available');
-      }
-    } else {
-      throw Exception('Error');
-    }
-    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-      setState(() {
-        _currentLocation = position;
-      });
-    }).catchError((error) {
-      print(error);
-    });
-  }
-
-  void getAddressFromCoordinates() async {
-    try {
-      List<Placemark> placemark = await placemarkFromCoordinates(
-          _currentLocation.latitude, _currentLocation.longitude);
-      Placemark p = placemark[0];
-      setState(() {
-        currentAddress =
-        "${p.thoroughfare}, ${p.subThoroughfare}, ${p.name}, ${p.subLocality}";
-      });
-    } catch (error) {
-      print(error);
-    }
-  }*/
-
 
   int currentStep = 0;
   final List<String> days = [
@@ -818,7 +774,7 @@ class _BizRegistrationState extends State<BizRegistration> {
               const SizedBox(height: 10),
 
               ElevatedButton(
-                child: Text("Select image"),
+                child: const Text("Select image"),
                 onPressed: () async {
                   final results = await FilePicker.platform.pickFiles(
                     allowMultiple: false,
@@ -828,7 +784,7 @@ class _BizRegistrationState extends State<BizRegistration> {
                   if (results == null) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No file selected.")));
                   }
-                  final path = results!.files.single.path;
+                  final path = results?.files.single.path;
                   final fileName = currentUser.toString();
 
                   storage.uploadFile(path!, fileName).
@@ -840,42 +796,6 @@ class _BizRegistrationState extends State<BizRegistration> {
             ],
           ),
         ),
-
-        Step(
-          state: currentStep > 5 ? StepState.complete : StepState.indexed,
-          isActive: true,
-          title: const Text('Business Gallery'),
-          content: Column(
-            children: [
-              const Text("Upload photos of your business or products"),
-              SizedBox(height: 10),
-
-              TextButton(
-                child: Text("Select gallery images"),
-                onPressed: () async {
-                  final results = await FilePicker.platform.pickFiles(
-                    allowMultiple: true,
-                    type: FileType.custom,
-                    allowedExtensions: ['png', 'jpg', 'jpeg'],
-                  );
-                  if (results == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No file selected.")));
-                  }
-                  final path = results!.files.single.path;
-                  final fileName = currentUser.toString();
-
-                  storage.uploadFile(path!, fileName).
-                  then((value) => print('Image Uploaded'));
-                  }),
-              ElevatedButton(
-                child: Text("Upload images"),
-                onPressed: () async {
-                  uploadGallery();
-                },
-              )
-            ])
-
-          ),
 
         Step(
           isActive: true,
@@ -1021,88 +941,11 @@ class _BizRegistrationState extends State<BizRegistration> {
         MaterialPageRoute(builder: (context) => const BusinessMainScreen()));
   }
 
-  void _showPicker(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Container(
-              child: new Wrap(
-                children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery'),
-                      onTap: () {
-                        chooseGalleryImage();
-                        Navigator.of(context).pop();
-                      }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
-                    onTap: () {
-                      chooseCameraImage();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-  chooseGalleryImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery,);
-    setState(() {
-      _image.add(File(pickedFile!.path));
-    });
-    if (pickedFile!.path == null) retrieveLostData();
-  }
-  chooseCameraImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      _image.add(File(pickedFile!.path));
-    });
-    if (pickedFile!.path == null) retrieveLostData();
-  }
-
-  Future<void> retrieveLostData() async {
-    final LostData response = (await picker.retrieveLostData()) as LostData;
-    if (response.isEmpty) {
-      return;
-    }
-    if (response.file != null) {
-      setState(() {
-        _image.add(File(response.file!.path));
-      });
-    } else {
-      print(response.file);
-    }
-  }
-
-  Future uploadGallery() async {
-    int i = 1;
-
-    for (var img in _image) {
-      setState(() {
-        val = i / _image.length;
-      });
-      ref = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child('images/${Path.basename(img.path)}');
-      await ref.putFile(img).whenComplete(() async {
-        await ref.getDownloadURL().then((value) {
-          gallery.add({'photoUrl': value});
-          i++;
-        });
-      });
-    }
-  }
-
   uploadFile() async {
     try {
       var imagefile =
-      FirebaseStorage.instance.ref().child("Businesses/${Path.basename(imagefile.path)}'").child("/$bizLogo");
-      UploadTask task = imagefile.putFile(_file!);
+      FirebaseStorage.instance.ref().child("Businesses/${Path.basename(_file.path)}'");
+      UploadTask task = imagefile.putFile(_file);
       TaskSnapshot snapshot = await task;
       url = await snapshot.ref.getDownloadURL();
 

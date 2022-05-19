@@ -8,11 +8,9 @@ import 'package:window_shopper/business/rating.dart';
 import 'package:window_shopper/models/reviews.dart';
 import 'package:window_shopper/notifier/biz_notifier.dart';
 import '../models/media_clicks.dart';
-import '../models/review_model.dart';
 import '../notifier/review_notifier.dart';
 import 'storage_service.dart';
-import 'package:window_shopper/flutter-icons-749bd7bf/custom_icon_icons.dart';
-
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class BizDetail extends StatefulWidget {
   const BizDetail({Key? key}) : super(key: key);
@@ -21,17 +19,7 @@ class BizDetail extends StatefulWidget {
   State<BizDetail> createState() => _BizDetailState();
 }
 
-void getReviews(ReviewNotifier reviewNotifier) async {
-  QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collectionGroup('reviews').get();
-  List<Reviews> _reviewList = [];
 
-  snapshot.docs.forEach((element) {
-    Reviews reviews = Reviews.fromMap(element.data());
-    _reviewList.add(reviews);
-  });
-
-  reviewNotifier.reviewList = _reviewList;
-}
 
 class _BizDetailState extends State<BizDetail> {
   final CollectionReference<Map<String, dynamic>> businesses = FirebaseFirestore
@@ -48,6 +36,7 @@ class _BizDetailState extends State<BizDetail> {
     BusinessNotifier businessNotifier = Provider.of<BusinessNotifier>(
         context, listen: false);
     ReviewNotifier reviewNotifier = Provider.of<ReviewNotifier>(context);
+    String listingName = businessNotifier.currentBusiness.bizName.toString();
     var listingId;
     final _auth = FirebaseAuth.instance;
     var reviewDocId;
@@ -67,7 +56,6 @@ class _BizDetailState extends State<BizDetail> {
     void initState() {
       setState(() {
       super.initState();
-      getReviews(reviewNotifier);
       businesses.where('users', isEqualTo: {currentUser})
           .get()
           .then((QuerySnapshot querySnapshot) {
@@ -86,9 +74,7 @@ class _BizDetailState extends State<BizDetail> {
     });
   }
 
-
-
-    /*Future<Widget> _getImage(BuildContext context, String imageName) async {
+      /*Future<Widget> _getImage(BuildContext context, String imageName) async {
       late Image image;
       await FirebaseStorageService.loadImage(context, imageName).then((value) {
         image = Image.network(value.toString(), fit: BoxFit.scaleDown);
@@ -96,33 +82,8 @@ class _BizDetailState extends State<BizDetail> {
       return image;
     }*/
 
-    submitReview () async {
-      DocumentSnapshot name = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser)
-          .get();
-      final username = name['Username'];
-
-
-      ReviewModel reviewModel = ReviewModel();
-
-      reviewModel.reviewId = user!.uid;
-      reviewModel.rating = ratings;
-      reviewModel.username = username;
-      reviewModel.review = review.text;
-      reviewModel.listing = businessNotifier.currentBusiness.bizName.toString();
-
-      await firebaseFirestore
-      .collection('reviews')
-      .doc(user.uid)
-      .collection("reviewDetails")
-      .doc(reviewDocId)
-      .set(reviewModel.toMap());
-
-    }
-
     submitFacebookClicks() async {
-      Facebook facebook = Facebook(createdOn: DateTime.now());
+      FacebookModel facebook = FacebookModel(createdOn: DateTime.now());
 
       facebook.createdOn = createdOn;
       facebook.clickID = user!.uid;
@@ -138,7 +99,7 @@ class _BizDetailState extends State<BizDetail> {
     }
 
     submitTwitterClicks() async {
-      Twitter twitter = Twitter(createdOn: DateTime.now());
+      TwitterModel twitter = TwitterModel(createdOn: DateTime.now());
 
       twitter.createdOn = createdOn;
       twitter.clickID = user!.uid;
@@ -153,7 +114,7 @@ class _BizDetailState extends State<BizDetail> {
     }
 
     submitInstagramClicks() async {
-      Instagram instagram = Instagram(createdOn: DateTime.now());
+      InstagramModel instagram = InstagramModel(createdOn: DateTime.now());
 
       instagram.createdOn = createdOn;
       instagram.clickID = user!.uid;
@@ -169,7 +130,7 @@ class _BizDetailState extends State<BizDetail> {
     }
 
     submitPinterestClicks() async {
-      Pinterest pinterest = Pinterest(createdOn: DateTime.now());
+      PinterestModel pinterest = PinterestModel(createdOn: DateTime.now());
 
       pinterest.createdOn = createdOn;
       pinterest.clickID = user!.uid;
@@ -191,6 +152,11 @@ class _BizDetailState extends State<BizDetail> {
         );
     }
     }
+
+    final Stream<QuerySnapshot> reviewStream = FirebaseFirestore.instance
+        .collection("businesses").doc(businessNotifier.currentBusiness.bizId.toString()).collection('reviewDetails')
+        //.where("listing", isEqualTo: listingName.toString())
+        .snapshots();
 
     return SafeArea(
       child: Scaffold(
@@ -397,14 +363,14 @@ class _BizDetailState extends State<BizDetail> {
                     ),
                     const SizedBox(height: 10),
 
-                    Padding(
+                    /*Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: const Text("Gallery",
                           style: TextStyle(fontSize: 20,
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 10),*/
 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -415,24 +381,64 @@ class _BizDetailState extends State<BizDetail> {
                     ),
                     const SizedBox(height: 10),
 
-                    /*ListView.separated(
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            children: [
-                              Text(reviewNotifier.reviewList[index].username.toString()),
-                              Text(reviewNotifier.reviewList[index].rating.toString()),
-                              Text(reviewNotifier.reviewList[index].review.toString()),
-                            ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: reviewStream,
+                          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if(snapshot.hasError) {
+                              //Snackbar for the error
+                            }
+                            if(!snapshot.hasData){
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 25),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("No reviews yet")
+                                  ],
+                                ),
+                              );
+                            }
+                            if(snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            final List viewDocs = [];
+                            snapshot.data!.docs.map((DocumentSnapshot document)  {
+                              Map view = document.data() as Map<String, dynamic>;
+                              viewDocs.add(view);
+                            }).toList();
+
+                          return Column(
+                            children:
+                              List.generate(
+                                  viewDocs.length,
+                                      (index) => Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children:[
+                                            Text(viewDocs[index]["userName"].toString(), style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                            SizedBox(height: 5,),
+                                            SmoothStarRating(
+                                              starCount: 5,
+                                              rating: viewDocs[index]["rating"].toDouble(),
+                                              size: 28.0,
+                                              color: Colors.redAccent,
+                                              borderColor: Colors.redAccent,
+                                            ),
+                                            SizedBox(height: 5,),
+                                            Text(viewDocs[index]["review"].toString()),
+                                            SizedBox(height: 18,),
+                                          ]
+                              ),
+                                      )),
                           );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider(
-                            color: Colors.black,
-                          );
-                        },
-                        itemCount: 2),*/
+                        }
+                      ),
+                    ),
                     const SizedBox(height: 20),
 
                     Padding(
@@ -466,7 +472,6 @@ class _BizDetailState extends State<BizDetail> {
                         onSaved: (value) {
                           review.text = value!;
                         },
-                        textInputAction: TextInputAction.next,
                         maxLines: 5,
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -491,8 +496,28 @@ class _BizDetailState extends State<BizDetail> {
                           child: MaterialButton(
                             padding: const EdgeInsets.all(8.0),
                             minWidth: 200,
-                            onPressed: () {
-                              submitReview();
+                            onPressed: () async {
+                              DocumentSnapshot name = await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(currentUser)
+                                  .get();
+                              final username = name['userName'];
+
+
+                              ReviewModel reviewModel = ReviewModel();
+
+                              reviewModel.reviewId = user!.uid;
+                              reviewModel.rating = ratings;
+                              reviewModel.userName = username;
+                              reviewModel.review = review.text;
+                              reviewModel.listing = businessNotifier.currentBusiness.bizName.toString();
+
+                              await firebaseFirestore
+                                  .collection('businesses')
+                                  .doc(businessNotifier.currentBusiness.bizId)
+                                  .collection("reviewDetails")
+                                  .doc(reviewDocId)
+                                  .set(reviewModel.toMap());
                             },
                             child: const Text(
                                 'Submit',
